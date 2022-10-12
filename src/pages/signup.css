@@ -1,0 +1,11 @@
+.signup-center-cls {
+  margin: 0 auto;
+  margin-top: 80px;
+}
+.error-message {
+  color: #d32f2f;
+}
+input.form-check-inline {
+    margin-right: 8px;
+    margin-left: 6px;
+}
