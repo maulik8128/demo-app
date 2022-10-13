@@ -43,7 +43,7 @@ const Signup = () => {
   return (
     <>
       <Container>
-        <div className="justify-content-center signup-center-cls" style={{ width: '37%' }}>
+        <div className="justify-content-center signup-center-cls" style={{ maxWidth: "380px" }}>
           <Formik initialValues={{ ...initialFormState }} validationSchema={SignupSchema} onSubmit={submitHandler}>
             {(formik) => {
               return (
