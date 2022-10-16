@@ -1,0 +1,8 @@
+.link-wrapper-cls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .link-wrapper-cls div {
+    cursor: pointer;
+  }
