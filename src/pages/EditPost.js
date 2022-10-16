@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getPost } from '../hooks/PostApi';
+import Lodder from '../componets/Lodder';
 let call = false;
 const EditPost = () => {
   const { id } = useParams();
@@ -30,7 +31,7 @@ const EditPost = () => {
   };
   const submitHandler = () => {};
   if (isLoading) {
-    return <h1>Loading</h1>;
+    return <Lodder/>;
   }
   return (
     <Container>

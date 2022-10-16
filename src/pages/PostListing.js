@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import './PostListing.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { deletePost, getPosts } from '../hooks/PostApi';
+import Lodder from '../componets/Lodder';
 
 const PostListing = () => {
   const [data, setData] = useState(null);
@@ -53,11 +54,9 @@ const PostListing = () => {
       console.log(err);
     },
   });
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return (
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
+        <Lodder/>
     );
   }
   return (
