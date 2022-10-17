@@ -66,7 +66,7 @@ const PostListing = () => {
         <thead>
           <tr>
             <th>Id</th>
-            <th>Tital</th>
+            <th>Title</th>
             <th>Body</th>
             <th>Action</th>
           </tr>
