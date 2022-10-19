@@ -1,8 +1,8 @@
 import request from '../utils/axios-utils';
 
-export const getPosts = async ({ queryKey }) => {
+export const getPosts = async () => {
   try {
-    return await request({ url: '/posts', method: 'get', data: queryKey[1] });
+    return await request({ url: '/posts', method: 'get' });
   } catch (error) {
     console.log(error);
     return error;
@@ -17,9 +17,19 @@ export const getPost = async ({ queryKey }) => {
   }
 };
 
-export const deletePost = async (data) => {
+export const deletePost = async (id) => {
   try {
-    return await request({ url: '/posts', method: 'delete', data: data });
+    return await request({ url: '/posts/'+id, method: 'delete'});
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+export const updatePost = async (data) => {
+  try {
+     const id=data.id;
+    return await request({ url: `posts/${id}`, method: 'patch',data:data });
   } catch (error) {
     console.log(error);
     return error;

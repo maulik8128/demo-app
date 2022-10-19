@@ -1,7 +1,6 @@
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
-import { Container, Spinner, Table } from 'react-bootstrap';
+import { Container, Table } from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import { useMutation, useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -9,23 +8,12 @@ import './PostListing.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { deletePost, getPosts } from '../hooks/PostApi';
 import Lodder from '../componets/Lodder';
+import { toast } from 'react-toastify';
 
 const PostListing = () => {
-  const [data, setData] = useState(null);
-  const onSuccess = (data) => {
-    setData(data.data);
-  };
-  const onError = (error) => {
-    console.log(error);
-  };
-
-  const { isLoading, isFetching } = useQuery(['posts'], getPosts, {
-    onSuccess,
-    onError,
-  });
+  const { isLoading, isError, data, refetch } = useQuery(['posts'], getPosts);
 
   const deleteRecord = (id) => {
-    console.log(id);
     confirmAlert({
       title: '',
       message: 'Are you sure you want delete post',
@@ -46,18 +34,31 @@ const PostListing = () => {
       overlayClassName: 'overlay-custom-class-name',
     });
   };
+  const onSuccess = (res) => {
+    refetch();
+    toast('🦄 Delete Successfully', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
+  };
+  const onError = (err) => {
+    console.log(err);
+  };
   const { mutate: deleteData } = useMutation(deletePost, {
-    onSuccess: (res) => {
-      console.log(res);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
+    onSuccess,
+    onError,
   });
-  if (isLoading) {
-    return (
-        <Lodder/>
-    );
+  if (isLoading || isError) {
+    return <Lodder />;
+  }
+  if (!data) {
+    return <div />;
   }
   return (
     <Container>
@@ -73,7 +74,7 @@ const PostListing = () => {
         </thead>
         <tbody>
           {data ? (
-            data.map((data, i) => {
+            data.data.map((data, i) => {
               return (
                 <tr key={i}>
                   <td>{data.id}</td>

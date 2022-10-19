@@ -1,71 +1,69 @@
 import { FastField, Formik } from 'formik';
 import { Button, Container, Form } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { getPost } from '../hooks/PostApi';
+import { useMutation, useQuery } from 'react-query';
+import { getPost, updatePost } from '../hooks/PostApi';
 import Lodder from '../componets/Lodder';
-let call = false;
+import { toast } from 'react-toastify';
 const EditPost = () => {
   const { id } = useParams();
-  const [postData, setPostData] = useState(null);
-  const onSuccess = (data) => {
-    console.log(data.data, 'dasda');
-    setPostData(data.data);
+  let navigate = useNavigate();
+  const onSuccess = (res) => {
+    navigate('/posts');
+    toast('🦄 Post updated Successfully', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
   };
-  console.log(postData);
-  const onError = (error) => {
-    console.log(error);
+  const onError = (err) => {
+    console.log(err);
   };
-  const { isLoading } = useQuery(['get-post', id], getPost, { onError, onSuccess });
+  const {
+    mutate: PostUpdate,
+    isLoading: PostIsLoading,
+    isError: PostIsError,
+  } = useMutation(updatePost, { onSuccess, onError });
 
+  const { isLoading, isError, data } = useQuery(['get-post', id], getPost);
+  if (!data) {
+    return null;
+  }
   const validationSchema = Yup.object().shape({
     title: Yup.string().min(2, 'Too Short!').required('Title is a required field'),
     body: Yup.string().min(2, 'Too Short!').required('Body is a required field'),
   });
 
-  const initialFormState = {
-    title: '',
-    body: '',
-  };
-  const submitHandler = () => {};
-  if (isLoading) {
-    return <Lodder/>;
+  if (isLoading || isError || PostIsLoading || PostIsError) {
+    return <Lodder />;
   }
+  const submitHandler = (value) => {
+    const id = data.data.id;
+    value.id = id;
+    console.log(value);
+    PostUpdate(value);
+  };
+
+  const initialFormState = {
+    title: data.data.title,
+    body: data.data.body,
+  };
   return (
     <Container>
       <h2 className="text-center mb-3 mt-3">Edit Post</h2>
       <div className="justify-content-center" style={{ maxWidth: '650px', margin: '0 auto' }}>
-        <Formik initialValues={{ ...initialFormState }} validationSchema={validationSchema} onSubmit={submitHandler}>
+        <Formik initialValues={initialFormState} validationSchema={validationSchema} onSubmit={submitHandler}>
           {({ values, errors, touched, handleSubmit, isSubmitting, handleChange, setFieldValue }) => {
-            if (!call) {
-              if (postData) {
-                console.log(postData['title'], 'call');
-                const fields = ['title', 'body'];
-                fields.forEach((field) => {
-                  console.log(postData[field]);
-                  setFieldValue(field, postData[field], false);
-                });
-                call = true;
-              }
-            }
-
             return (
               <Form className="needs-validation" onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Title</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="title"
-                    placeholder="Enter title"
-                    className="form-control"
-                    value={values.title}
-                    isValid={touched.title && !errors.title}
-                    isInvalid={errors.title && touched.title}
-                    onChange={handleChange}
-                  />
-                  {errors.name && touched.name ? <div className="error-message">{errors.name}</div> : null}
                   <FastField
                     type="text"
                     name="title"
