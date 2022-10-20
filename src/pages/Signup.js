@@ -10,18 +10,18 @@ import { useState } from 'react';
 const Signup = () => {
   const [img, setImg] = useState(null);
   const nationality = ['India', 'USA', 'canada'];
-  const { mutate, isLoading, isError } = useMutation(registerUser, { onSuccess, onError });
   const submitHandler = async (values) => {
     console.log(values);
     mutate(values);
   };
-
+  
   const onSuccess = (res) => {
     console.log(res);
   };
   const onError = (err) => {
     console.log(err);
   };
+  const { mutate, isLoading, isError } = useMutation(registerUser, { onSuccess, onError });
   if (isLoading || isError) {
     return <Lodder />;
   }
