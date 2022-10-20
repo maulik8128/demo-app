@@ -58,7 +58,7 @@ const PostListing = () => {
     return <Lodder />;
   }
   if (!data) {
-    return <div />;
+    return <Lodder />;
   }
   return (
     <Container>

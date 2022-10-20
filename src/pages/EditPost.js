@@ -33,7 +33,7 @@ const EditPost = () => {
 
   const { isLoading, isError, data } = useQuery(['get-post', id], getPost);
   if (!data) {
-    return null;
+    return <Lodder />;
   }
   const validationSchema = Yup.object().shape({
     title: Yup.string().min(2, 'Too Short!').required('Title is a required field'),
